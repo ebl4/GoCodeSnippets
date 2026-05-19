@@ -4,18 +4,25 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
-	_ "github.com/microsoft/go-mssqldb"
+	"github.com/go-sql-driver/mysql"
 )
 
 var db *sql.DB
 
 func main() {
-	connString := "sqlserver://localhost?database=recordings&trusted_connection=true&encrypt=disable&user id=NT AUTHORITY\\NETWORK SERVICE"
+	// Capture connection properties.
+	cfg := mysql.NewConfig()
+	cfg.User = os.Getenv("DBUSER")
+	cfg.Passwd = os.Getenv("DBPASS")
+	cfg.Net = "tcp"
+	cfg.Addr = "127.0.0.1:3306"
+	cfg.DBName = "recordings"
 
 	// Get a database handle.
 	var err error
-	db, err = sql.Open("sqlserver", connString)
+	db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,6 +31,5 @@ func main() {
 	if pingErr != nil {
 		log.Fatal(pingErr)
 	}
-
 	fmt.Println("Connected!")
 }
