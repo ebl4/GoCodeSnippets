@@ -21,3 +21,6 @@ go.work.sum
 .vscode/
 # Logs and databases
 *.log
+# Temporary files
+*.tmp
+*.txt
